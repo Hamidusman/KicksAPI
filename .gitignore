@@ -1,3 +1,6 @@
 migrations
 __pycache__
 .env
+db.sqlite3
+product-image-main
+product-images
