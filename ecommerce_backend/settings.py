@@ -39,6 +39,8 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'apps.core',
     'rest_framework',
+    "corsheaders",
+    
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -55,6 +57,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
+    "corsheaders.middleware.CorsMiddleware",
 ]
 
 ROOT_URLCONF = 'ecommerce_backend.urls'
@@ -100,6 +104,9 @@ else:
             'PORT': env('PORT'),
         }
     }
+    
+    
+CORS_ALLOW_ALL_ORIGINS = True
 
 
 # Password validation
