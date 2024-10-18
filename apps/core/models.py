@@ -13,14 +13,14 @@ class Product(models.Model):
     def __str__(self):
         return (self.name)
 
-class ProductImage(models):
+class ProductImage(models.Model):
     product = models.ForeignKey(Product, related_name='images', on_delete=models.CASCADE)
     image = models.ImageField(upload_to=('product-images/'))
     
     def __str__(self):
         return (f'Images for {self.product}')
 
-class Rating(models.CharField):
+class Rating(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     rating = models.DecimalField(max_digits=2, decimal_places=1, default=0.0)
     
