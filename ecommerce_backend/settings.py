@@ -27,7 +27,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = 'django-insecure-bv)0rtheq7&t)n$%w*58&i8^kvj##jd00aufcs1t7a^5jmt=hk'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -84,14 +84,14 @@ WSGI_APPLICATION = 'ecommerce_backend.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-if DEBUG == True:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+'''
 else:
     DATABASES = {
         'default': {
@@ -104,7 +104,7 @@ else:
             'PORT': env('PORT'),
         }
     }
-    
+    '''
     
 CORS_ALLOW_ALL_ORIGINS = True
 
