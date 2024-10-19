@@ -7,48 +7,23 @@ from django.db.models import Avg
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import viewsets, generics
-
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data)
-    
-    def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data)
-    
-    def update(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data)
-    
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        instance.delete()
-        return Response("Product Deleted Successfully")
-    
-    @action(detail=True, methods=['get'])
-    def total_rating(self, request, *args, **kwargs):
-        product = self.get_object()
-        
-        total_rating = Rating.objects.filter(product=product).aggregate(Avg('rating'))['rating__avg']
-        return Response({
-            'total_rating': total_rating or 0
-        })
-    
 
-class ProductImagesView(generics.ListCreateAPIView):
-    queryset = ProductImage
-    serializer_class = ProductImageSerializer
-    
+    @action(detail=True, methods=['get'])
+    def average_rating(self, request, *args, **kwargs):
+        product = self.get_object()
+        average_rating = Rating.objects.filter(product=product).aggregate(Avg('rating'))['rating__avg']
+        return Response({'average_rating': average_rating or 0})
+
+    @action(detail=True, methods=['post'])
+    def add_product_image(self, request, *args, **kwargs):
+        product = self.get_object()
+        serializer = ProductImageSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(product=product)
+        return Response({'message': 'Image Added Successfully'})
 
 class RatingViewSet(viewsets.ModelViewSet):
     queryset = Rating.objects.all()
