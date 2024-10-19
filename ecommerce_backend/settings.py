@@ -27,7 +27,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = 'django-insecure-bv)0rtheq7&t)n$%w*58&i8^kvj##jd00aufcs1t7a^5jmt=hk'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -39,7 +39,8 @@ ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = [
     'apps.core',
     'rest_framework',
-    "corsheaders",
+    'corsheaders',
+    'drf_yasg',
     
     'django.contrib.admin',
     'django.contrib.auth',
