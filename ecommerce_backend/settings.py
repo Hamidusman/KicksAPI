@@ -38,10 +38,14 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'apps.core',
+    'apps.users',
+    
     'rest_framework',
     'corsheaders',
     'drf_yasg',
-    
+    'djoser',
+    'rest_framework.authtoken',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -82,6 +86,29 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ecommerce_backend.wsgi.application'
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
+
+AUTH_USER_MODEL = 'users.User'
+DJOSER = {
+    'LOGIN_FIELD': 'email',  # Set this to use email as the login field if desired
+    'USER_CREATE_PASSWORD_RETYPE': True,
+    'SET_PASSWORD_RETYPE': True,
+    'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
+    'SEND_ACTIVATION_EMAIL': False,
+    'SERIALIZERS': {
+        'user_create': 'apps.users.serializers.UserCreateSerializer',
+        'user': 'djoser.serializers.UserSerializer',
+        'current_user': 'djoser.serializers.UserSerializer',
+    },
+}
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
