@@ -7,7 +7,7 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     category = models.CharField(max_length=30)
     quantity = models.IntegerField()
-    main_image = models.ImageField(upload_to='product-main-img/')
+    main_image = models.URLField()
     uploaded_at = models.DateField(auto_now=True)
     
     def __str__(self):
@@ -15,7 +15,7 @@ class Product(models.Model):
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, related_name='images', on_delete=models.CASCADE)
-    image = models.ImageField(upload_to=('product-images/'))
+    image = models.URLField()
     
     def __str__(self):
         return (f'Images for {self.product}')
