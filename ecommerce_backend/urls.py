@@ -18,16 +18,10 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-   # Your existing URL patterns
-   # ...
-   path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-   path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-]
-
-urlpatterns = [
    path('admin/', admin.site.urls),
-   path('', include('apps.core.urls')),
+   path('api/', include('apps.core.urls')),
    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+   path('', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
    path('auth/', include('djoser.urls')),
    path('auth/', include('djoser.urls.authtoken')),
 ]

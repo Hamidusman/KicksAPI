@@ -6,6 +6,4 @@ router = DefaultRouter()
 router.register(r'products', views.ProductViewSet, basename='product')
 router.register(r'ratings', views.RatingViewSet, basename='rating')
 
-urlpatterns = [
-    path('', include(router.urls)),
-]
+urlpatterns = router.urls
