@@ -7,8 +7,11 @@ from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Avg
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
 from rest_framework import viewsets, generics
 from .filters import ProductFilter
+@method_decorator(cache_page(60*15), name='dispatch')
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
