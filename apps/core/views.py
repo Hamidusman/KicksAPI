@@ -3,13 +3,17 @@ from .serializers import (ProductSerializer,
                         ProductImageSerializer,
                         RatingSerializer,
                         )
+from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Avg
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import viewsets, generics
+from .filters import ProductFilter
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ProductFilter
 
     @action(detail=True, methods=['get'])
     def average_rating(self, request, *args, **kwargs):
