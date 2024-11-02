@@ -30,8 +30,8 @@ SECRET_KEY = 'django-insecure-bv)0rtheq7&t)n$%w*58&i8^kvj##jd00aufcs1t7a^5jmt=hk
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-
-
+USE_SWAGGER=True
+USE_REDOC=True
 # Application definition
 
 
@@ -65,6 +65,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     
     "corsheaders.middleware.CorsMiddleware",
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'ecommerce_backend.urls'
