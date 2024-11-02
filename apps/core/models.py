@@ -29,7 +29,6 @@ class Product(models.Model):
     shoe_size = models.ManyToManyField(ShoeSize,
                     verbose_name=_('shoe sizes'))
     
-    
     def __str__(self):
         return (self.name)
 
