@@ -7,12 +7,18 @@ from django.urls import path, include
 
 schema_view = get_schema_view(
    openapi.Info(
-      title="Your API Title",
-      default_version="v1",
-      description="Your API description",
-      terms_of_service="https://example.com/terms/",
-      contact=openapi.Contact(email="contact@example.com"),
-      license=openapi.License(name="MIT License"),
+      title="KicksAPI",
+      default_version="v0.6",
+      description='''
+      
+      An E-commerce API.
+      As of now, the core functionalities all seem functional.
+      Next stage of development would include working on the user profile and connecting to the main app (API)
+      '''
+      ,
+      #terms_of_service="",
+      contact=openapi.Contact(email="abdulhamidusman218@gmail.com"),
+      #license=openapi.License(name="MIT License"),
    ),
    public=True,
 )
