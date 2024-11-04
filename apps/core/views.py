@@ -45,6 +45,8 @@ class CartViewSet(viewsets.ModelViewSet):
         cart = self.get_object()
         product_id = request.data.get('product')
         quantity = request.data.get('quantity', 1)
+        if quantity < 1:
+            return Response("Quantity can not be less than 1", status=400)
         
         product = Product.objects.get(id=product_id)
         cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
