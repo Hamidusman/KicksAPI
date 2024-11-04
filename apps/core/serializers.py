@@ -1,6 +1,9 @@
 from django.db.models import Avg
 from rest_framework import serializers
-from .models import Product, ProductImage, Rating
+from .models import (Product, ProductImage,
+                    Rating, Cart, CartItem,
+                    Transaction, TransactionItem,
+                    )
 
 class RatingSerializer(serializers.ModelSerializer):
     class Meta:
@@ -33,3 +36,23 @@ class ProductImageSerializer(serializers.ModelSerializer):
         model = ProductImage
         fields = ['product', 'image']
         
+
+class CartItemSerializer(serializers.ModelSerializer):
+    product = ProductSerializer()
+    class Meta:
+        model = CartItem
+        fields = ['id','product', 'quantity']
+    
+class CartSerializer(serializers.ModelSerializer):
+    item = CartItemSerializer(many=True)
+    class Meta:
+        model = Cart
+        fields = ['id', 'user', 'item']
+        read_only_fields = ['user']
+    
+    def create(self, validated_data):
+        items_data = validated_data.pop('items')
+        cart = Cart.objects.create(**validated_data)
+        for item_data in items_data:
+            CartItem.objects.create(cart=cart, **item_data)
+        return cart

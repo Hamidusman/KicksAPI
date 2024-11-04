@@ -1,8 +1,11 @@
-from .models import Product, ProductImage, Rating
+from .models import Product, ProductImage, Rating, Cart, CartItem
 from .serializers import (ProductSerializer,
                         ProductImageSerializer,
                         RatingSerializer,
+                        CartSerializer,
+                        CartItemSerializer
                         )
+from ..users.models import Profile
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Avg
 from rest_framework.decorators import action
@@ -32,6 +35,25 @@ class ProductViewSet(viewsets.ModelViewSet):
         serializer.save(product=product)
         return Response({'message': 'Image Added Successfully'})
 
+
+class CartViewSet(viewsets.ModelViewSet):
+    queryset = Cart.objects.all()
+    serializer_class = CartSerializer
+
+    @action(detail=True, methods=['post'])
+    def add_to_cart(self, request, pk=None):
+        cart = self.get_object()
+        product_id = request.data.get('product')
+        quantity = request.data.get('quantity', 1)
+        
+        product = Product.objects.get(id=product_id)
+        cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
+        cart_item.quantity += quantity
+        cart_item.save()
+        
+        return Response({'status': 'item added to cart'}, status=status.HTTP_200_OK)
+
+    
 class RatingViewSet(viewsets.ModelViewSet):
     queryset = Rating.objects.all()
     serializer_class = RatingSerializer
