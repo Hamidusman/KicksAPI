@@ -4,5 +4,5 @@ from . import views
 
 router = DefaultRouter()
 router.register(r'profile', views.ProfileViewSet, basename='usersss')
-
+router.register(r'', views.UserViewSet, basename='user')
 urlpatterns = router.urls
