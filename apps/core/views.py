@@ -13,7 +13,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
-from rest_framework import viewsets, generics
+from django.shortcuts import get_object_or_404
+from rest_framework import viewsets, generics, status
 from .filters import ProductFilter
 
 @method_decorator(cache_page(60*15), name='dispatch')
@@ -72,6 +73,16 @@ class CartViewSet(viewsets.ModelViewSet):
             'message': 'Product added to cart',
             'cart_item': CartItemSerializer(cart_item).data
         }, status=201)
+        
+    @action(detail=True, methods=['delete'], url_path='remove-item/(?P<item_id>\d+)')
+    def remove_item(self, request, pk=None, item_id=None):
+        try:
+            cart = self.get_object()
+            cart_item = CartItem.objects.get(cart=cart, id=item_id)
+            cart_item.delete()
+            return Response({'status': 'item removed from cart'}, status=status.HTTP_200_OK)
+        except CartItem.DoesNotExist:
+            return Response({'error': 'Cart item not found'}, status=status.HTTP_404_NOT_FOUND)
     
 class RatingViewSet(viewsets.ModelViewSet):
     queryset = Rating.objects.all()
