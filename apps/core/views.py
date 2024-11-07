@@ -7,6 +7,7 @@ from .serializers import (ProductSerializer,
                         )
 from ..users.models import Profile
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.permissions import IsAuthenticated
 from django.db.models import Avg
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -14,6 +15,7 @@ from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
 from rest_framework import viewsets, generics
 from .filters import ProductFilter
+
 @method_decorator(cache_page(60*15), name='dispatch')
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
@@ -37,24 +39,39 @@ class ProductViewSet(viewsets.ModelViewSet):
 
 
 class CartViewSet(viewsets.ModelViewSet):
-    queryset = Cart.objects.all()
     serializer_class = CartSerializer
+    permission_classes = [IsAuthenticated]
+    
+    def get_queryset(self):
+        return Cart.objects.filter(user=self.request.user)
 
-    @action(detail=True, methods=['post'])
-    def add_to_cart(self, request, pk=None):
-        cart = self.get_object()
+    def perform_create(self, serializer):
+        return serializer.save(user=self.request.user)
+    
+    @action(detail=False, methods=['post'])
+    def add_to_cart(self, request):
         product_id = request.data.get('product')
         quantity = request.data.get('quantity', 1)
+
         if quantity < 1:
-            return Response("Quantity can not be less than 1", status=400)
-        
-        product = Product.objects.get(id=product_id)
+            return Response({"message": "Quantity cannot be less than 1"}, status=400)
+
+        try:
+            product = Product.objects.get(id=product_id)
+        except Product.DoesNotExist:
+            return Response({"message": "Product not found"}, status=404)
+
+        cart, created = Cart.objects.get_or_create(user=request.user)
         cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
+
         cart_item.quantity += quantity
         cart_item.save()
-        
-        return Response({'status': 'item added to cart'}, status=status.HTTP_200_OK)
 
+        # Return response with cart item details
+        return Response({
+            'message': 'Product added to cart',
+            'cart_item': CartItemSerializer(cart_item).data
+        }, status=201)
     
 class RatingViewSet(viewsets.ModelViewSet):
     queryset = Rating.objects.all()

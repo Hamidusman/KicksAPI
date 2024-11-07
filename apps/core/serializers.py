@@ -44,14 +44,14 @@ class CartItemSerializer(serializers.ModelSerializer):
         fields = ['id','product', 'quantity']
     
 class CartSerializer(serializers.ModelSerializer):
-    item = CartItemSerializer(many=True)
+    item = CartItemSerializer(many=True, required=False)
     class Meta:
         model = Cart
         fields = ['id', 'user', 'item']
         read_only_fields = ['user']
     
     def create(self, validated_data):
-        items_data = validated_data.pop('items')
+        items_data = validated_data.pop('items', [])
         cart = Cart.objects.create(**validated_data)
         for item_data in items_data:
             CartItem.objects.create(cart=cart, **item_data)
